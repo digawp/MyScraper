@@ -1,0 +1,2 @@
+scrapy
+mysql-connector-python-rf ~= 2.1
