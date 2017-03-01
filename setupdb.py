@@ -1,10 +1,11 @@
 import urlparse
 
 import mysql.connector
+from mysql.connector import errorcode
 
 def create_db_conn():
     try:
-        db_conn = mysql.connector.connect(user='root', password='root',
+        db_conn = mysql.connector.connect(user='root', password='',
                                                 host='localhost',
                                                 database='ScrapeProject')
         return db_conn
