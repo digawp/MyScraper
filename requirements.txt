@@ -1,3 +1,4 @@
 # If on Windows, pip install pypiwin32 too
 scrapy
 scrapy-rotating-proxies
+scrapy-proxy-rotator

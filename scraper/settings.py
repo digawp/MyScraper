@@ -89,6 +89,21 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+#######################################################
+# Uncomment the following if using scrapy-proxy-rotator
+#######################################################
+
+# DOWNLOADER_MIDDLEWARES = {
+#     'scrapy_proxy_rotator.ProxyMiddleware': 1,
+# }
+
+# PROXY_ROTATOR = {
+#     'username': 'user',
+#     'password': 'password',
+#     'proxies_file': 'proxies.txt',
+# }
+
+
 ##########################################################
 # Uncomment the following if using scrapy-rotating-proxies
 ##########################################################
