@@ -1,7 +1,7 @@
 import scrapy
 
 import scraper_parser
-import scraper_crawler
+import scraper_follower
 
 class Spider(scrapy.Spider):
     name = "spider"
@@ -20,5 +20,5 @@ class Spider(scrapy.Spider):
     def parse(self, response):
         for res in scraper_parser.parse(response):
             yield res
-        for res in scraper_crawler.generate_next_urls(response):
+        for res in scraper_follower.generate_next_urls(response):
             yield res
