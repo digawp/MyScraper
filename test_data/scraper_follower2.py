@@ -1,6 +1,6 @@
 import scrapy
 
-import scraper_parser2
+import scraper_parser
 
 def generate_next_urls(response):
     '''
@@ -13,5 +13,5 @@ def generate_next_urls(response):
     for url in urls:
         yield scrapy.Request(
             url=response.urljoin(url),
-            callback=scraper_parser2.parse,
+            callback=scraper_parser.parse,
         )
