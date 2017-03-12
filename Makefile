@@ -17,4 +17,4 @@ test3:
 	scrapy crawl spider -o out.csv
 
 clean:
-	rm -f **/*.pyc **/*.csv **/*.json **/*.xml
+	rm -f scraper/{,spiders/}*.pyc *.csv *.json *.xml
