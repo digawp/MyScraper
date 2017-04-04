@@ -35,11 +35,11 @@ A customizable (to some extent) scraper written in Python, based on [Scrapy](htt
 
 2. `make test2`
 
-    Moderate level of protection. Taken from [scrapoxy's tutorial](https://scrapoxy.readthedocs.io/en/master/tutorials/python-scrapy/index.html). Known protections: delay between requests, user-agent.
+    Moderate level of protection. Taken from [scrapoxy's tutorial](https://scrapoxy.readthedocs.io/en/master/tutorials/python-scrapy/index.html). Known protections: throttle requests, user-agent check.
 
 3. `make test3`
 
-    High level of protection. **Not implemented yet**.
+    Moderate level of protection. Scrape data from crunchbase.com profiles. Known protections: throttle requests, user-agent check, non-resident(?) IP blacklisting.
 
 ## License
 
