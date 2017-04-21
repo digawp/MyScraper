@@ -37,7 +37,6 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 
 # Disable cookies (enabled by default)
 # COOKIES_ENABLED = False
-COOKIES_DEBUG = True
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -95,37 +94,23 @@ COOKIES_DEBUG = True
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-#######################################################
-# Uncomment the following if using scrapy-proxy-rotator
-#######################################################
-
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapy_proxy_rotator.ProxyMiddleware': 1,
-# }
-
-# PROXY_ROTATOR = {
-#     'username': 'user',
-#     'password': 'password',
-#     'proxies_file': 'proxies.txt',
-# }
-
 
 ##########################################################
 # Uncomment the following if using scrapy-rotating-proxies
 ##########################################################
 
-DOWNLOADER_MIDDLEWARES = {
-   'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-   'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-}
+# DOWNLOADER_MIDDLEWARES = {
+#    'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+#    'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+# }
 
-def load_lines(path):
-   with open(path, 'rb') as f:
-      return [line.strip() for line in
-              f.read().decode('utf8').splitlines()
-              if line.strip()]
+# def load_lines(path):
+#    with open(path, 'rb') as f:
+#       return [line.strip() for line in
+#               f.read().decode('utf8').splitlines()
+#               if line.strip()]
 
-ROTATING_PROXY_LIST = load_lines('proxies.txt')
+# ROTATING_PROXY_LIST = load_lines('proxies.txt')
 
 
 ############################################
