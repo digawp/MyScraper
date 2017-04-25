@@ -1,4 +1,6 @@
 # If on Windows, pip install pypiwin32 too
 scrapy
-scrapy-rotating-proxies
-scrapy-proxy-rotator
+# scrapy-rotating-proxies
+scrapoxy
+pymysql
+sqlalchemy

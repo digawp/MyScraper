@@ -117,23 +117,23 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 ## Uncomment the following if using Scrapoxy
 ############################################
 
-# CONCURRENT_REQUESTS_PER_DOMAIN = 1
-# RETRY_TIMES = 0
+CONCURRENT_REQUESTS_PER_DOMAIN = 1
+RETRY_TIMES = 0
 
-# # PROXY
-# PROXY = 'http://127.0.0.1:8888/?noconnect'
+# PROXY
+PROXY = 'http://127.0.0.1:8888/?noconnect'
 
-# # SCRAPOXY
-# API_SCRAPOXY = 'http://127.0.0.1:8889/api'
-# API_SCRAPOXY_PASSWORD = 'password'
+# SCRAPOXY
+API_SCRAPOXY = 'http://127.0.0.1:8889/api'
+API_SCRAPOXY_PASSWORD = 'password'
 
-# # BLACKLISTING
-# BLACKLIST_HTTP_STATUS_CODES = [ 503, 999 ]
+# BLACKLISTING
+BLACKLIST_HTTP_STATUS_CODES = [ 503, 999, 461 ]
 
-# DOWNLOADER_MIDDLEWARES = {
-#     'scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware': 100,
-#     'scrapoxy.downloadmiddlewares.wait.WaitMiddleware': 101,
-#     'scrapoxy.downloadmiddlewares.scale.ScaleMiddleware': 102,
-#     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': None,
-#     'scrapoxy.downloadmiddlewares.blacklist.BlacklistDownloaderMiddleware': 950,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    'scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware': 100,
+    'scrapoxy.downloadmiddlewares.wait.WaitMiddleware': 101,
+    'scrapoxy.downloadmiddlewares.scale.ScaleMiddleware': 102,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': None,
+    'scrapoxy.downloadmiddlewares.blacklist.BlacklistDownloaderMiddleware': 950,
+}
