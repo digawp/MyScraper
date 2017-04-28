@@ -88,11 +88,11 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 
 # Enable and configure HTTP caching (disabled by default)
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-#HTTPCACHE_ENABLED = True
-#HTTPCACHE_EXPIRATION_SECS = 0
-#HTTPCACHE_DIR = 'httpcache'
-#HTTPCACHE_IGNORE_HTTP_CODES = []
-#HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+HTTPCACHE_ENABLED = True
+HTTPCACHE_EXPIRATION_SECS = 0
+HTTPCACHE_DIR = 'httpcache'
+HTTPCACHE_IGNORE_HTTP_CODES = [416]
+HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 
 ##########################################################
@@ -118,7 +118,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 1
 ############################################
 
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
-RETRY_TIMES = 0
+RETRY_TIMES = 3
 
 # PROXY
 PROXY = 'http://127.0.0.1:8888/?noconnect'
@@ -128,7 +128,7 @@ API_SCRAPOXY = 'http://127.0.0.1:8889/api'
 API_SCRAPOXY_PASSWORD = 'password'
 
 # BLACKLISTING
-BLACKLIST_HTTP_STATUS_CODES = [ 503, 999, 461 ]
+BLACKLIST_HTTP_STATUS_CODES = [ 500, 461 ]
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware': 100,
