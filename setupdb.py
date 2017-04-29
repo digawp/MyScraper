@@ -44,6 +44,9 @@ class Job(Base):
     organization_id = Column(Integer, ForeignKey('tbl_Organization.id'))
     organization_url = Column(VARCHAR(255), nullable=False)
     title = Column(VARCHAR(64))
+    start = Column(VARCHAR(16))
+    end = Column(VARCHAR(16))
+    appointment_period = Column(VARCHAR(64))
 
     person = relationship('Person', back_populates='jobs')
     organization = relationship('Organization')
@@ -95,6 +98,7 @@ class Education(Base):
     person_id = Column(Integer, ForeignKey('tbl_Person.id'), nullable=False)
     organization_id = Column(Integer, ForeignKey('tbl_Organization.id'))
     organization_url = Column(VARCHAR(255), nullable=False)
+    period = Column(VARCHAR(64))
     
     person = relationship('Person', back_populates='jobs')
     organization = relationship('Organization')
