@@ -75,29 +75,11 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         loader.add_xpath('twitter', '(//a[contains(@class,"twitter")])[1]/@href')
         loader.add_xpath('linkedin', '(//a[contains(@class,"linkedin")])[1]/@href')
         loader.add_xpath('description', '//*[@id="description"]/span/div')
-
-        jobs = []
-        current_jobs = response.xpath('//div[@class="current_job"]/div[@class="info-block"]')
-        current_jobs_titles = current_jobs.xpath('//h4/text()').extract()
-        current_jobs_urls = current_jobs.xpath('//h5/a/@href').extract()
-        for i in range(len(current_jobs)):
-            title = current_jobs_titles[i]
-            company_url = current_jobs_urls[i]
-            jobs.append((title, company_url))
-
-        past_jobs_section = response.css('.past_job > .info-row')
-        past_jobs_titles = past_jobs_section.css('.title::text').extract()
-        past_jobs_urls = past_jobs_section.css('.company').xpath('a/@href').extract()
-        for i in range(len(past_jobs_titles)):
-            title = past_jobs_titles[i]
-            company_url = past_jobs_urls[i]
-            jobs.append((title, company_url))
-
-        loader.add_value('jobs', jobs)
-
-        # loader.add_xpath('board_advisors')
-        # loader.add_xpath('investments')
-        # loader.add_xpath('education')
+        loader.add_css('current_jobs', '.current_job')
+        loader.add_css('past_jobs', '.past_job')
+        loader.nested_css('.advisory_roles').add_xpath('board_advisors', './/ul/li')
+        loader.nested_css('table.investors').add_xpath('investments', './/tr[not(@class="thead")]')
+        loader.nested_css('.education').add_xpath('education', './/ul/li')
 
         return loader.load_item()
 
