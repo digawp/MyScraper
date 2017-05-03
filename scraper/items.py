@@ -97,10 +97,30 @@ class Person(scrapy.Item):
         output_processor=processors.Identity())
 
 class Organization(scrapy.Item):
+
+    # Helper functions
+    def _acquisitions_processor(node_list):
+        if not node_list:
+            return
+        selector = Selector(text=node_list[0])
+        date = selector.xpath('.//tr/td[1]/text()').extract()
+        company_url = selector.xpath('.//tr/td[2]/a/@href').extract()
+
+        return zip(date, company_url)
+
+    def _employees_processor(node_list):
+        if not node_list:
+            return
+        selector = Selector(text=node_list[0])
+        nested_selector = selector.xpath('.//ul/li')
+        person_url = nested_selector.xpath('.//h4/a/@href').extract()
+        title = nested_selector.xpath('.//h5/text()').extract() # need to cleanup tags
+        title = map(lambda x: w3lib.html.remove_tags(x), title)
+        return zip(person_url, title)
+
     name = scrapy.Field()
     url = scrapy.Field()
-    ipo_date = scrapy.Field()
-    stock_code = scrapy.Field()
+    ipo_stock = scrapy.Field()
     headquarters = scrapy.Field()
     description = scrapy.Field()
     categories = scrapy.Field()
@@ -108,12 +128,18 @@ class Organization(scrapy.Item):
     facebook = scrapy.Field()
     twitter = scrapy.Field()
     linkedin = scrapy.Field()
-    found_date = scrapy.Field()
+    founded = scrapy.Field()
     aliases = scrapy.Field()
-
-    acquisitions = scrapy.Field()
     founders = scrapy.Field()
-    employees = scrapy.Field()
-    competitors = scrapy.Field()
-    partners = scrapy.Field()
-    board_members = scrapy.Field()
+
+    acquisitions = scrapy.Field(
+        input_processor=processors.Compose(_acquisitions_processor),
+        output_processor=processors.Identity())
+    employees = scrapy.Field(
+        input_processor=processors.Compose(_employees_processor),
+        output_processor=processors.Identity())
+    competitors = scrapy.Field(output_processor=processors.Identity())
+    partners = scrapy.Field(output_processor=processors.Identity())
+    board_members = scrapy.Field(
+        input_processor=processors.Compose(_employees_processor),
+        output_processor=processors.Identity())
