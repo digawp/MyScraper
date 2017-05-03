@@ -8,6 +8,7 @@ from scraper.items import Person, Organization
 
 class CrunchbaseSpider(spiders.CrawlSpider):
     name = "crunchbase"
+    handle_httpstatus_list = [416]
 
     def start_requests(self):
         urls = []
@@ -149,3 +150,8 @@ class CrunchbaseSpider(spiders.CrawlSpider):
 
     def parse_advisors(self, response):
         pass
+
+    def parse_default(self, response):
+        print('Found response 416. Pushing redirected URL back to queue.')
+        if response.status == 416:
+            yield scrapy.Request(url=response.meta['redirect_urls'][0])
