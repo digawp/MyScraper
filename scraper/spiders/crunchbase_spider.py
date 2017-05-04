@@ -27,7 +27,7 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         # Crawl and parse person
         spiders.Rule(
             LinkExtractor(allow=r'/person/.*', deny=r'/person/.*[/\.]'),
-            callback='parse_employees', follow=True),
+            callback='parse_person', follow=True),
         # Crawl organization
         spiders.Rule(
             LinkExtractor(allow=r'/organization/.*', deny=r'/organization/.*[/\.]'),
@@ -57,7 +57,7 @@ class CrunchbaseSpider(spiders.CrawlSpider):
     def parse_start_url(self, response):
         if response.url.find('/person/') >= 0:
             self.parse_person(response)
-        if response.url.find('/organization/') >= 0:
+        elif response.url.find('/organization/') >= 0:
             self.parse_organization(response)
         else:
             raise Exception('Start url is neither person nor organization')

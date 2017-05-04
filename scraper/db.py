@@ -63,7 +63,7 @@ class BoardAdvisorRole(Base):
     organization_url = Column(VARCHAR(255), nullable=False)
     title = Column(VARCHAR(128))
 
-    person = relationship('Person', back_populates='jobs')
+    person = relationship('Person', back_populates='board_advisors')
     organization = relationship('Organization')
 
     def __repr__(self):
@@ -80,7 +80,7 @@ class Investment(Base):
     organization_url = Column(VARCHAR(255), nullable=False)
     date = Column(Date)
 
-    person = relationship('Person', back_populates='jobs')
+    person = relationship('Person', back_populates='investments')
     organization = relationship('Organization')
 
     def __repr__(self):
@@ -98,7 +98,7 @@ class Education(Base):
     organization_url = Column(VARCHAR(255), nullable=False)
     period = Column(VARCHAR(64))
     
-    person = relationship('Person', back_populates='jobs')
+    person = relationship('Person', back_populates='education')
     organization = relationship('Organization')
 
     def __repr__(self):
@@ -140,7 +140,6 @@ class Acquisition(Base):
 
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('tbl_Organization.id'), nullable=False)
-    acquired_organization_id = Column(Integer, ForeignKey('tbl_Organization.id'))
     acquired_organization_url = Column(VARCHAR(255), nullable=False)
     date = Column(Date)
 
@@ -190,7 +189,6 @@ class Competitor(Base):
 
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('tbl_Organization.id'), nullable=False)
-    competitor_organization_id = Column(Integer, ForeignKey('tbl_Organization.id'), nullable=False)
     competitor_url = Column(VARCHAR(255), nullable=False)
 
     focal_company = relationship('Organization', back_populates='competitors')
@@ -204,7 +202,6 @@ class Partner(Base):
 
     id = Column(Integer, primary_key=True)
     organization_id = Column(Integer, ForeignKey('tbl_Organization.id'), nullable=False)
-    partner_organization_id = Column(Integer, ForeignKey('tbl_Organization.id'), nullable=False)
     partner_url = Column(VARCHAR(255), nullable=False)
 
     focal_company = relationship('Organization', back_populates='partners')
@@ -224,7 +221,7 @@ class BoardMember(Base):
     title = Column(VARCHAR(128))
 
     person = relationship('Person')
-    organization = relationship('Organization', back_populates='employees')
+    company = relationship('Organization', back_populates='board_members')
 
     def __repr__(self):
         return '{} has {} as a board member'.format(self.organization.name,
