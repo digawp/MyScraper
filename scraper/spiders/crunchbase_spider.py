@@ -4,7 +4,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader, processors
 import w3lib.html
 
-from scraper.items import Person, Organization
+from scraper.items import *
 
 class CrunchbaseSpider(spiders.CrawlSpider):
     name = "crunchbase"
@@ -128,19 +128,43 @@ class CrunchbaseSpider(spiders.CrawlSpider):
                 # Ignore if key is not in the Item's field
                 pass
 
-        loader.add_css('acquisitions', 'div.acquisitions')
-        loader.add_css('employees', 'div.people')
         loader.nested_css('div.competitors').add_xpath('competitors', './/ul/li//h4/a/@href')
         loader.nested_css('div.partners').add_xpath('partners', './/ul/li//h4/a/@href')
         loader.add_css('board_members', 'div.advisors')
+        yield loader.load_item()
 
-        return loader.load_item()
+        for item in self.parse_acquisitions(response):
+            yield item
+        for item in self.parse_employees(response):
+            yield item
 
     def parse_acquisitions(self, response):
-        pass
+        company_url = response.xpath('//*[@id="profile_header_heading"]/a/@href').extract_first()
+        acq_selectors = response.css('div.acquisitions').xpath('.//tr[not(th)]')
+
+        for sel in acq_selectors:
+            loader = ItemLoader(item=Acquisition(), selector=sel)
+            loader.default_input_processor = processors.MapCompose(w3lib.html.remove_tags)
+            loader.default_output_processor = processors.TakeFirst()
+
+            loader.add_value('focal_company_url', company_url)
+            loader.add_xpath('date', 'td[1]/text()')
+            loader.add_xpath('acquired_url', 'td[2]/a/@href')
+            yield loader.load_item()
+
 
     def parse_employees(self, response):
-        pass
+        company_url = response.xpath('//*[@id="profile_header_heading"]/a/@href').extract_first()
+        employee_selector = response.css('div.people').xpath('.//ul/li')
+
+        for sel in employee_selector:
+            loader = ItemLoader(item=Employee(), selector=sel)
+            loader.default_input_processor = processors.MapCompose(w3lib.html.remove_tags)
+            loader.default_output_processor = processors.TakeFirst()
+            loader.add_value('company_url', company_url)
+            loader.add_xpath('person_url', './/h4/a/@href')
+            loader.add_xpath('title', './/h5/text()')
+            yield loader.load_item()
 
     def parse_competitors(self, response):
         pass

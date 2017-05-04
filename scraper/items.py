@@ -98,26 +98,6 @@ class Person(scrapy.Item):
 
 class Organization(scrapy.Item):
 
-    # Helper functions
-    def _acquisitions_processor(node_list):
-        if not node_list:
-            return
-        selector = Selector(text=node_list[0])
-        date = selector.xpath('.//tr/td[1]/text()').extract()
-        company_url = selector.xpath('.//tr/td[2]/a/@href').extract()
-
-        return zip(date, company_url)
-
-    def _employees_processor(node_list):
-        if not node_list:
-            return
-        selector = Selector(text=node_list[0])
-        nested_selector = selector.xpath('.//ul/li')
-        person_url = nested_selector.xpath('.//h4/a/@href').extract()
-        title = nested_selector.xpath('.//h5/text()').extract() # need to cleanup tags
-        title = map(lambda x: w3lib.html.remove_tags(x), title)
-        return zip(person_url, title)
-
     name = scrapy.Field()
     url = scrapy.Field()
     ipo_stock = scrapy.Field()
