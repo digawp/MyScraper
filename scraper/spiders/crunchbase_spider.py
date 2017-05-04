@@ -8,7 +8,9 @@ from scraper.items import *
 
 class CrunchbaseSpider(spiders.CrawlSpider):
     name = "crunchbase"
-    handle_httpstatus_list = [416]
+
+    # TODO: find out if pages with 416 status code is re-crawled or not!
+    # handle_httpstatus_list = [416]
 
     def start_requests(self):
         urls = []
