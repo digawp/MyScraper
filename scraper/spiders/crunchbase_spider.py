@@ -105,7 +105,7 @@ class CrunchbaseSpider(spiders.CrawlSpider):
 
         loader.add_xpath('name', '//*[@id="profile_header_heading"]/a/text()')
         loader.add_value('url', response.url)
-        # loader.add_value('ipo_stock', None)
+        # loader.add_value('ipo_stock', None) # TODO!
 
         # Fields expected: headquarters, description, founders, categories, website
         overview = response.xpath('//*[@id="info-card-overview-content"]/div/dl/dt/text()')
@@ -129,9 +129,6 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         for i in range(len(details)):
             key = details[i].extract()
             key = key[:key.find(':')].lower()
-            # Not supposed to fill in employees from here
-            if key == 'employees':
-                continue
             try:
                 overview_loader.add_xpath(key, 'dd[{}]/text()'.format(i+1))
             except KeyError as e:

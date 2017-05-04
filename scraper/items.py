@@ -64,8 +64,7 @@ class Person(scrapy.Item):
     # Fields
     name = scrapy.Field()
     url = scrapy.Field()
-    primary_role = scrapy.Field(
-        input_processor=processors.MapCompose(w3lib.html.remove_tags))
+    primary_role = scrapy.Field()
     born = scrapy.Field()
     gender = scrapy.Field()
     location = scrapy.Field()
@@ -73,9 +72,7 @@ class Person(scrapy.Item):
     facebook = scrapy.Field()
     twitter = scrapy.Field()
     linkedin = scrapy.Field()
-    description = scrapy.Field(
-        input_processor=processors.MapCompose(w3lib.html.remove_tags),
-        output_processor=processors.Join())
+    description = scrapy.Field(output_processor=processors.Join())
 
     # Fields that are stored in a different table
     # Current and past jobs stored in different fields because they will be
