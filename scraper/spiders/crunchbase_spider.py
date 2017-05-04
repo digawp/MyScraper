@@ -212,8 +212,3 @@ class CrunchbaseSpider(spiders.CrawlSpider):
             loader.add_xpath('person_url', './/h4/a/@href')
             loader.add_xpath('title', './/h5/text()')
             yield loader.load_item()
-
-    def parse_default(self, response):
-        print('Found response 416. Pushing redirected URL back to queue.')
-        if response.status == 416:
-            return scrapy.Request(url=response.meta['redirect_urls'][0])
