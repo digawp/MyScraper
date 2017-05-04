@@ -19,17 +19,17 @@ class CrunchbaseSpider(spiders.CrawlSpider):
               if line.strip()]
 
         for url in urls:
-            yield scrapy.Request(url=url)
+            yield self.make_requests_from_url(url)
 
     rules = (
         # Crawl and parse person
         spiders.Rule(
-            LinkExtractor(allow=r'/person/.*', deny=r'/person/.*/'),
-            callback='parse_person', follow=True),
+            LinkExtractor(allow=r'/person/.*', deny=r'/person/.*[/\.]'),
+            callback='parse_employees', follow=True),
         # Crawl organization
         spiders.Rule(
-            LinkExtractor(allow=r'/organization/.*', deny=r'/organization/.*/'),
-            callback='parse_organization'),
+            LinkExtractor(allow=r'/organization/.*', deny=r'/organization/.*[/\.]'),
+            callback='parse_organization', follow=True),
         # Crawl acquisitions table
         spiders.Rule(
             LinkExtractor(allow=r'/acquisitions$', deny=r'/app/search', restrict_css='.acquisitions'),
@@ -51,6 +51,14 @@ class CrunchbaseSpider(spiders.CrawlSpider):
             LinkExtractor(allow=r'/advisors$', restrict_css='.advisors'),
             callback='parse_advisors'),
     )
+
+    def parse_start_url(self, response):
+        if response.url.find('/person/') >= 0:
+            self.parse_person(response)
+        if response.url.find('/organization/') >= 0:
+            self.parse_organization(response)
+        else:
+            raise Exception('Start url is neither person nor organization')
 
     """
     NOTE: there might be field-specific processors under scraper/items.py
@@ -209,4 +217,4 @@ class CrunchbaseSpider(spiders.CrawlSpider):
     def parse_default(self, response):
         print('Found response 416. Pushing redirected URL back to queue.')
         if response.status == 416:
-            yield scrapy.Request(url=response.meta['redirect_urls'][0])
+            return scrapy.Request(url=response.meta['redirect_urls'][0])
