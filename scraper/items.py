@@ -112,14 +112,25 @@ class Organization(scrapy.Item):
     aliases = scrapy.Field()
     founders = scrapy.Field()
 
-    acquisitions = scrapy.Field(
-        input_processor=processors.Compose(_acquisitions_processor),
-        output_processor=processors.Identity())
-    employees = scrapy.Field(
-        input_processor=processors.Compose(_employees_processor),
-        output_processor=processors.Identity())
-    competitors = scrapy.Field(output_processor=processors.Identity())
-    partners = scrapy.Field(output_processor=processors.Identity())
-    board_members = scrapy.Field(
-        input_processor=processors.Compose(_employees_processor),
-        output_processor=processors.Identity())
+class Acquisition(scrapy.Item):
+    focal_company_url = scrapy.Field()
+    acquired_url = scrapy.Field()
+    date = scrapy.Field()
+
+class Employee(scrapy.Item):
+    company_url = scrapy.Field()
+    person_url = scrapy.Field()
+    title = scrapy.Field()
+
+class Competitor(scrapy.Item):
+    focal_company_url = scrapy.Field()
+    competitor_url = scrapy.Field()
+
+class Partner(scrapy.Item):
+    focal_company_url = scrapy.Field()
+    partner_url = scrapy.Field()
+
+class BoardMember(scrapy.Item):
+    company_url = scrapy.Field()
+    person_url = scrapy.Field()
+    title = scrapy.Field()

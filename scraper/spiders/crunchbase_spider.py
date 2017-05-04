@@ -128,14 +128,17 @@ class CrunchbaseSpider(spiders.CrawlSpider):
                 # Ignore if key is not in the Item's field
                 pass
 
-        loader.nested_css('div.competitors').add_xpath('competitors', './/ul/li//h4/a/@href')
-        loader.nested_css('div.partners').add_xpath('partners', './/ul/li//h4/a/@href')
-        loader.add_css('board_members', 'div.advisors')
         yield loader.load_item()
 
         for item in self.parse_acquisitions(response):
             yield item
         for item in self.parse_employees(response):
+            yield item
+        for item in self.parse_competitors(response):
+            yield item
+        for item in self.parse_partners(response):
+            yield item
+        for item in self.parse_advisors(response):
             yield item
 
     def parse_acquisitions(self, response):
@@ -167,13 +170,41 @@ class CrunchbaseSpider(spiders.CrawlSpider):
             yield loader.load_item()
 
     def parse_competitors(self, response):
-        pass
+        company_url = response.xpath('//*[@id="profile_header_heading"]/a/@href').extract_first()
+        comp_selectors = response.css('div.competitors').xpath('.//ul/li//h4/a')
+
+        for sel in comp_selectors:
+            loader = ItemLoader(item=Competitor(), selector=sel)
+            loader.default_input_processor = processors.MapCompose(w3lib.html.remove_tags)
+            loader.default_output_processor = processors.TakeFirst()
+            loader.add_value('focal_company_url', company_url)
+            loader.add_xpath('competitor_url', '@href')
+            yield loader.load_item()
 
     def parse_partners(self, response):
-        pass
+        company_url = response.xpath('//*[@id="profile_header_heading"]/a/@href').extract_first()
+        partner_selectors = response.css('div.partners').xpath('.//ul/li//h4/a')
+
+        for sel in partner_selectors:
+            loader = ItemLoader(item=Partner(), selector=sel)
+            loader.default_input_processor = processors.MapCompose(w3lib.html.remove_tags)
+            loader.default_output_processor = processors.TakeFirst()
+            loader.add_value('focal_company_url', company_url)
+            loader.add_xpath('partner_url', '@href')
+            yield loader.load_item()
 
     def parse_advisors(self, response):
-        pass
+        company_url = response.xpath('//*[@id="profile_header_heading"]/a/@href').extract_first()
+        employee_selector = response.css('div.advisors').xpath('.//ul/li')
+
+        for sel in employee_selector:
+            loader = ItemLoader(item=BoardMember(), selector=sel)
+            loader.default_input_processor = processors.MapCompose(w3lib.html.remove_tags)
+            loader.default_output_processor = processors.TakeFirst()
+            loader.add_value('company_url', company_url)
+            loader.add_xpath('person_url', './/h4/a/@href')
+            loader.add_xpath('title', './/h5/text()')
+            yield loader.load_item()
 
     def parse_default(self, response):
         print('Found response 416. Pushing redirected URL back to queue.')
