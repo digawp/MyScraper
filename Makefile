@@ -1,7 +1,6 @@
 test:
-	rm -f out.csv
-	scrapy crawl crunchbase -o out.csv
-	cmp out.csv sample.csv
+	rm -f out.json
+	scrapy crawl crunchbase -o out.json
 
 test1: clean
 	cp test_data/scraper_parser1.py scraper/spiders/scraper_parser.py
