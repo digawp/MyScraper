@@ -9,8 +9,7 @@ from datetime import datetime
 import logging
 
 from pymysql import err
-from sqlalchemy import create_engine, exc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, orm, exc
 
 import db
 import items
@@ -18,10 +17,7 @@ import items
 class ScraperPipeline(object):
     def open_spider(self, spider):
         engine = create_engine('mysql+pymysql://crunchbase@localhost/crunchbase?charset=utf8')
-        self.Session = sessionmaker(bind=engine)
-
-    def close_spider(self, spider):
-        pass
+        self.Session = orm.sessionmaker(bind=engine)
 
     def process_item(self, item, spider):
         item_type = type(item)
@@ -105,21 +101,61 @@ class ScraperPipeline(object):
                     focal_org.date = datetime.strptime(item['date'], '%b %d, %Y').date()
                 focal_org.acquisitions.append(acq)
 
-            except (exc.MultipleResultsFound, exc.NoResultFound) as e:
+            except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
                 logging.error('Supposed to find 1 result')
                 raise e
 
     def store_employee(self, item):
-        pass
+        with self.session_scope() as session:
+            try:
+                org = session.query(db.Organization).filter(
+                    db.Organization.url.like('%{}%'.format(item['company_url']))
+                ).one()
+                employee = db.Employee(title=item.get('title'), person_url=item['person_url'])
+                org.employees.append(employee)
+
+            except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
+                logging.error('Supposed to find 1 result')
+                raise e
 
     def store_competitor(self, item):
-        pass
+        with self.session_scope() as session:
+            try:
+                focal_org = session.query(db.Organization).filter(
+                    db.Organization.url.like('%{}%'.format(item['focal_company_url']))
+                ).one()
+                competitor = db.Competitor(competitor_url=item['competitor_url'])
+                focal_org.competitors.append(competitor)
+
+            except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
+                logging.error('Supposed to find 1 result')
+                raise e
 
     def store_partner(self, item):
-        pass
+        with self.session_scope() as session:
+            try:
+                focal_org = session.query(db.Organization).filter(
+                    db.Organization.url.like('%{}%'.format(item['focal_company_url']))
+                ).one()
+                partner = db.Partner(partner_url=item['partner_url'])
+                focal_org.partners.append(partner)
+
+            except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
+                logging.error('Supposed to find 1 result')
+                raise e
 
     def store_board_member(self, item):
-        pass
+        with self.session_scope() as session:
+            try:
+                org = session.query(db.Organization).filter(
+                    db.Organization.url.like('%{}%'.format(item['company_url']))
+                ).one()
+                board_member = db.BoardMember(title=item.get('title'), person_url=item['person_url'])
+                org.board_members.append(board_member)
+
+            except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
+                logging.error('Supposed to find 1 result')
+                raise e
 
     @contextmanager
     def session_scope(self):
