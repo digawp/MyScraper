@@ -44,20 +44,17 @@ class ScraperPipeline(object):
 
     def store_person(self, item):
         with self.session_scope() as session:
-            person = db.Person(
-                name=item['name'],
-                url=item['url'],
-            )
-            person.primary_role = item.get('primary_role', None)
-            if item.get('born', None):
+            person = db.Person(name=item['name'], url=item['url'])
+            person.primary_role = item.get('primary_role')
+            if item.get('born'):
                 person.born = datetime.strptime(item['born'], '%B %d, %Y').date()
-            person.gender = item.get('gender', None)
-            person.location = item.get('location', None)
-            person.website = item.get('website', None)
-            person.facebook = item.get('facebook', None)
-            person.twitter = item.get('twitter', None)
-            person.linkedin = item.get('linkedin', None)
-            person.description = item.get('description', None)
+            person.gender = item.get('gender')
+            person.location = item.get('location')
+            person.website = item.get('website')
+            person.facebook = item.get('facebook')
+            person.twitter = item.get('twitter')
+            person.linkedin = item.get('linkedin')
+            person.description = item.get('description')
 
             for raw_job in item.get('current_jobs', []):
                 job = db.Job(title=raw_job[0], organization_url=raw_job[1], appointment_period=raw_job[2])

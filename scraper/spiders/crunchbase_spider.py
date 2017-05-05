@@ -107,6 +107,7 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         loader.add_value('url', response.url)
         # loader.add_value('ipo_stock', None) # TODO!
 
+        # TODO: supposed to get person url for founders!
         # Fields expected: headquarters, description, founders, categories, website
         overview = response.xpath('//*[@id="info-card-overview-content"]/div/dl/dt/text()')
         overview_loader = loader.nested_xpath('//*[@id="info-card-overview-content"]/div/dl')
