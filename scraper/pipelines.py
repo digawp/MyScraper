@@ -6,9 +6,10 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from contextlib import contextmanager
 from datetime import datetime
+import logging
 
-from pymysql.err import IntegrityError
-from sqlalchemy import create_engine
+from pymysql import err
+from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 
 import db
@@ -69,7 +70,7 @@ class ScraperPipeline(object):
 
             for investment in item.get('investments', []):
                 inv = db.Investment(organization_url=investment[0])
-                inv.date = datetime.strptime(investment[1], '%B, %Y').date()
+                inv.date = datetime.strptime(investment[1], '%b, %Y').date()
                 person.investments.append(inv)
 
             for raw_edu in item.get('education', []):
@@ -79,10 +80,34 @@ class ScraperPipeline(object):
             session.add(person)
 
     def store_org(self, item):
-        pass
+        with self.session_scope() as session:
+            org = db.Organization(name=item['name'], url=item['url'])
+            org.headquarters = item.get('headquarters')
+            org.description = item.get('description')
+            org.categories = item.get('categories')
+            org.website = item.get('website')
+            org.facebook = item.get('facebook')
+            org.twitter = item.get('twitter')
+            org.linkedin = item.get('linkedin')
+            org.aliases = item.get('aliases')
+            if item.get('founded'):
+                org.found_date = datetime.strptime(item['founded'], '%B %d, %Y').date()
+            session.add(org)
 
     def store_acq(self, item):
-        pass
+        with self.session_scope() as session:
+            try:
+                focal_org = session.query(db.Organization).filter(
+                    db.Organization.url.like('%{}%'.format(item['focal_company_url']))
+                ).one()
+                acq = db.Acquisition(acquired_organization_url=item['acquired_url'])
+                if item.get('date'):
+                    focal_org.date = datetime.strptime(item['date'], '%b %d, %Y').date()
+                focal_org.acquisitions.append(acq)
+
+            except (exc.MultipleResultsFound, exc.NoResultFound) as e:
+                logging.error('Supposed to find 1 result')
+                raise e
 
     def store_employee(self, item):
         pass
@@ -102,7 +127,7 @@ class ScraperPipeline(object):
         try:
             yield session
             session.commit()
-        except IntegrityError:
+        except (err.IntegrityError, exc.IntegrityError):
             session.rollback()
         except Exception as e:
             session.rollback()
