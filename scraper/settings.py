@@ -128,7 +128,7 @@ API_SCRAPOXY = 'http://127.0.0.1:8889/api'
 API_SCRAPOXY_PASSWORD = 'password'
 
 # BLACKLISTING
-BLACKLIST_HTTP_STATUS_CODES = [ 500, 461 ]
+BLACKLIST_HTTP_STATUS_CODES = [ 500, 416 ]
 
 DOWNLOADER_MIDDLEWARES = {
     'scrapoxy.downloadmiddlewares.proxy.ProxyMiddleware': 100,
