@@ -58,8 +58,28 @@ class ScraperPipeline(object):
             person.twitter = item.get('twitter', None)
             person.linkedin = item.get('linkedin', None)
             person.description = item.get('description', None)
-            session.add(person)
 
+            for raw_job in item.get('current_jobs', []):
+                job = db.Job(title=raw_job[0], organization_url=raw_job[1], appointment_period=raw_job[2])
+                person.jobs.append(job)
+            for raw_job in item.get('past_jobs', []):
+                job = db.Job(title=raw_job[0], organization_url=raw_job[1], start=raw_job[2], end=raw_job[3])
+                person.jobs.append(job)
+
+            for advisor_role in item.get('board_advisors', []):
+                role = db.BoardAdvisorRole(title=advisor_role[0], organization_url=advisor_role[1])
+                person.board_advisors.append(role)
+
+            for investment in item.get('investments', []):
+                inv = db.Investment(organization_url=investment[0])
+                inv.date = datetime.strptime(investment[1], '%B, %Y').date()
+                person.investments.append(inv)
+
+            for raw_edu in item.get('education', []):
+                edu = db.Education(organization_url=raw_edu[0], period=raw_edu[1])
+                person.education.append(edu)
+
+            session.add(person)
 
     def store_org(self, item):
         pass
