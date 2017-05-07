@@ -1,6 +1,9 @@
+run:
+	scrapy crawl crunchbase -L INFO --logfile scraper.log
+
 test:
 	rm -f out.json
-	scrapy crawl crunchbase -o out.json
+	scrapy crawl crunchbase -o out.json -L INFO --logfile scraper_test.log
 
 test1: clean
 	cp test_data/scraper_parser1.py scraper/spiders/scraper_parser.py
@@ -21,4 +24,4 @@ test3: clean
 	scrapy crawl spider -o out.csv
 
 clean:
-	rm -f scraper/{,spiders/}*.pyc *.csv *.json *.xml
+	rm -f scraper/{,spiders/}*.pyc *.csv *.json *.xml *.log

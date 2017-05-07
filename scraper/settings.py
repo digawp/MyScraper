@@ -14,6 +14,7 @@ BOT_NAME = 'scraper'
 SPIDER_MODULES = ['scraper.spiders']
 NEWSPIDER_MODULE = 'scraper.spiders'
 
+JOBDIR = 'jobs/crunchbase'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # Firefox
