@@ -1,0 +1,52 @@
+{
+    "commander": {
+        "password": "password"
+    },
+    "instance": {
+        "port": 3128,
+        "scaling": {
+            "min": 1,
+            "max": 5
+        }
+    },
+    "providers": {
+        "type": "awsec2",
+        "awsec2": {
+            "accessKeyId": "AKIAJD4EO7UM7KRVDTJQ",
+            "secretAccessKey": "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",
+            "region": "us-west-2",
+            "instance": {
+                "InstanceType": "t1.micro",
+                "ImageId": "ami-bcb428dc",
+                "SecurityGroups": [
+                    "forward-proxy"
+                ]
+            }
+        },
+        "ovhcloud": {
+            "endpoint": "YOUR ENDPOINT (could be: ovh-eu)",
+            "appKey": "YOUR APP KEY",
+            "appSecret": "YOUR APP SECRET",
+            "consumerKey": "YOUR CONSUMER KEY",
+            "serviceId": "YOUR SERVICE ID",
+            "region": "YOUR REGION (could be: BHS1, GRA1 or SBG1)",
+            "sshKeyName": "YOUR SSH KEY (could be: mykey)",
+            "flavorName": "vps-ssd-1",
+            "snapshotName": "YOUR SNAPSHOT NAME (could be: forward-proxy)"
+        },
+        "digitalocean": {
+            "token": "YOUR PERSONAL TOKEN",
+            "region": "YOUR REGION (could be: lon1)",
+            "size": "512mb",
+            "sshKeyName": "YOUR SSH KEY (could be: mykey)",
+            "imageName": "YOUR SNAPSHOT NAME (could be: forward-proxy)"
+        },
+        "vscale": {
+            "token": "YOUR PERSONAL TOKEN",
+            "region": "YOUR REGION (could be: msk0, spb0)",
+            "imageName": "YOUR SNAPSHOT NAME (could be: forward-proxy)",
+            "sshKeyName": "YOUR SSH KEY (could be: mykey)",
+            "plan": "YOUR PLAN (could be: small)"
+        }
+    }
+}
