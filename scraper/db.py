@@ -5,6 +5,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+CONN_URL = 'mysql+pymysql://crunchbase@localhost/crunchbase?charset=utf8'
+
 def get_name_or_b(a, b):
     return a.name if a is not None else b
 

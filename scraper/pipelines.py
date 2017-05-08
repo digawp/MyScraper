@@ -16,7 +16,7 @@ import items
 
 class ScraperPipeline(object):
     def open_spider(self, spider):
-        engine = create_engine('mysql+pymysql://crunchbase@localhost/crunchbase?charset=utf8')
+        engine = create_engine(db.CONN_URL)
         self.Session = orm.sessionmaker(bind=engine)
 
     def process_item(self, item, spider):
