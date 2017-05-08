@@ -16,8 +16,9 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         urls = []
 
         with open('urls.txt', 'rb') as urls_file:
+            # Change encoding if necessary
             urls = [line.strip() for line in
-              urls_file.read().decode('utf8').splitlines()
+              urls_file.read().decode('utf16').splitlines()
               if line.strip()]
 
         for url in urls:
