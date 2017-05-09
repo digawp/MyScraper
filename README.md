@@ -68,6 +68,10 @@ Strongly recommended:
 
     Stores scraped `Item`s to json file so you can compare it with what is stored in the database. Don't forget to run scrapoxy first before running `make test`.
 
+5. `scrapy shel "<target-url>"
+
+    Testing Xpath and CSS selectors. More info [here](https://doc.scrapy.org/en/1.3/intro/tutorial.html#extracting-data).
+
 ### url_cleaner.py
 
 Normalize URLs scraped by ScrapeBox from Prof Huang. Removes trailing `/investments` etc from crunchbase `/person/` URLs. Default encoding is UTF-16.

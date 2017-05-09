@@ -24,4 +24,5 @@ test3: clean
 	scrapy crawl spider -o out.csv
 
 clean:
-	rm -f scraper/{,spiders/}*.pyc *.csv *.json *.xml *.log
+	rm -f scraper/{,spiders/}*.pyc out.json *.log
+	rm -rf jobs
