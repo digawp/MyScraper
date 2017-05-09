@@ -109,14 +109,15 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         # loader.add_value('ipo_stock', None) # TODO!
 
         # TODO: supposed to get person url for founders!
-        # Fields expected: headquarters, description, founders, categories, website
-        overview = response.xpath('//*[@id="info-card-overview-content"]/div/dl/dt/text()')
-        overview_loader = loader.nested_xpath('//*[@id="info-card-overview-content"]/div/dl')
-        for i in range(len(overview)):
-            key = overview[i].extract()
+        # Fields expected: headquarters, description, founders, categories,
+        # website, founded (date), and aliases
+        keys = response.css('div.definition-list').xpath('dt/text()')
+        values = response.css('div.definition-list').xpath('dd')
+        for i in range(len(keys)):
+            key = keys[i].extract()
             key = key[:key.find(':')].lower()
             try:
-                overview_loader.add_xpath(key, 'dd[{}]/text()'.format(i+1))
+                loader.add_value(key, values[i].extract())
             except KeyError as e:
                 # Ignore if key is not in the Item's field
                 pass
@@ -124,18 +125,6 @@ class CrunchbaseSpider(spiders.CrawlSpider):
         loader.add_xpath('facebook', '(//a[contains(@class,"facebook")])[1]/@href')
         loader.add_xpath('twitter', '(//a[contains(@class,"twitter")])[1]/@href')
         loader.add_xpath('linkedin', '(//a[contains(@class,"linkedin")])[1]/@href')
-
-        # Fields expected: founded and aliases
-        details = response.xpath('//div[@class="details definition-list"]/dt/text()')
-        details_loader = loader.nested_xpath('//div[@class="details definition-list"]')
-        for i in range(len(details)):
-            key = details[i].extract()
-            key = key[:key.find(':')].lower()
-            try:
-                overview_loader.add_xpath(key, 'dd[{}]/text()'.format(i+1))
-            except KeyError as e:
-                # Ignore if key is not in the Item's field
-                pass
 
         yield loader.load_item()
 
