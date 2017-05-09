@@ -44,7 +44,7 @@ class ScraperPipeline(object):
             person = db.Person(name=item['name'], url=item['url'])
             person.primary_role = item.get('primary_role')
             if item.get('born'):
-                person.born = datetime.strptime(item['born'], '%B %d, %Y').date()
+                person.born = self.parse_date(item['born'])
             person.gender = item.get('gender')
             person.location = item.get('location')
             person.website = item.get('website')
@@ -66,7 +66,7 @@ class ScraperPipeline(object):
 
             for investment in item.get('investments', []):
                 inv = db.Investment(organization_url=investment[0])
-                inv.date = datetime.strptime(investment[1], '%b, %Y').date()
+                inv.date = self.parse_date(investment[1])
                 person.investments.append(inv)
 
             for raw_edu in item.get('education', []):
@@ -87,7 +87,7 @@ class ScraperPipeline(object):
             org.linkedin = item.get('linkedin')
             org.aliases = item.get('aliases')
             if item.get('founded'):
-                org.found_date = datetime.strptime(item['founded'], '%B %d, %Y').date()
+                org.found_date = self.parse_date(item['founded'])
             session.add(org)
 
     def store_acq(self, item):
@@ -98,7 +98,7 @@ class ScraperPipeline(object):
                 ).one()
                 acq = db.Acquisition(acquired_organization_url=item['acquired_url'])
                 if item.get('date'):
-                    focal_org.date = datetime.strptime(item['date'], '%b %d, %Y').date()
+                    focal_org.date = self.parse_date(item['date'])
                 focal_org.acquisitions.append(acq)
 
             except (orm.exc.MultipleResultsFound, orm.exc.NoResultFound) as e:
@@ -170,3 +170,27 @@ class ScraperPipeline(object):
             raise e
         finally:
             session.close()
+
+    """
+    Parses dates with the possible date formats in Crunchbase.
+    """
+    def parse_date(self, date_string):
+        date_formats = [
+            '%B %d, %Y',
+            '%b, %Y',
+            '%b %d, %Y',
+            '%b, %Y',
+            '%B, %Y',
+            '%Y',
+        ]
+        for date_format in date_formats:
+            try:
+                dt = datetime.strptime(date_string, date_format)
+            except ValueError:
+                # Try another date_format
+                continue
+            else:
+                return dt.date()
+        # If loop exits and we still haven't returned, that means date_formats
+        # need to be expanded with the uncaught date_string date format
+        raise ValueError('No formats fits the date string {}'.format(date_string))
