@@ -175,6 +175,9 @@ class ScraperPipeline(object):
     Parses dates with the possible date formats in Crunchbase.
     """
     def parse_date(self, date_string):
+        if date_string == 'Unknown':
+            return None
+
         date_formats = [
             '%B %d, %Y',
             '%b, %Y',
